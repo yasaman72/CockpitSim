@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityScript.Steps;
 
-public class SubmitChange : MonoBehaviour
+public class SubmitGuesses : MonoBehaviour
 {
+
     public enum Indicators
     {
         Speed,
@@ -18,12 +18,12 @@ public class SubmitChange : MonoBehaviour
 
     private int lastChangeAmount;
 
-    public SubmitChange(Indicators variableToChange)
+    public SubmitGuesses(Indicators variableToChange)
     {
         _variableToChange = variableToChange;
     }
 
-    public void ChangeIndicatorAmount(int changeAmount)
+    public void ChangeGuessAmount(int changeAmount)
     {
         StopAllCoroutines();
 
@@ -45,19 +45,19 @@ public class SubmitChange : MonoBehaviour
             switch (_variableToChange)
             {
                 case Indicators.Speed:
-                    RealStateManager.instance.RealSpeed += changeAmount;
+                    GameManager.instance.Speed += changeAmount;
                     break;
 
                 case Indicators.Altitude:
-                    RealStateManager.instance.RealAltitude += changeAmount;
+                    GameManager.instance.Altitude += changeAmount;
                     break;
 
                 case Indicators.Direction:
-                    RealStateManager.instance.RealDirection += changeAmount;
+                    GameManager.instance.Direction += changeAmount;
                     break;
 
                 case Indicators.Rotation:
-                    RealStateManager.instance.RealRotation += changeAmount;
+                    GameManager.instance.Rotation += changeAmount;
                     break;
 
                 default:
@@ -66,6 +66,6 @@ public class SubmitChange : MonoBehaviour
 
             yield return new WaitForSeconds(_changeInterval);
         }
-    }
 
+    }
 }

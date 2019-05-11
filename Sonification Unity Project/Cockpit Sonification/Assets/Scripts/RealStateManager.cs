@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Assets.Scripts;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RealStateManager : MonoBehaviour
 {
+    public Text timerText;
+    public int simulationTime;
+    public float timerIncreaseAmount;
 
     [Space, Header("speed"), SerializeField] private int _realSpeed;
     public int speedMin, speedMax;
@@ -22,6 +25,7 @@ public class RealStateManager : MonoBehaviour
     }
 
     public AudioSource speedAudioSource;
+    public float minSpeedPitch, maxSpeedPitch;
 
     [Space, Header(("altitude")), SerializeField] private int _realAltitude;
     public int altitudeMin, altitudeMax;
@@ -37,9 +41,7 @@ public class RealStateManager : MonoBehaviour
         }
     }
 
-    //public AudioSource altitudeAudioSource;
-    //public Transform minAltitudeTransform, maxAltitudeTransform;
-
+    public AudioSource maxAltitudeAudioSource, minAltitudeAudioSource;
 
     [Space, Header("direction"), SerializeField] private int _realDirection;
     public int directionMin, directionMax;
@@ -58,9 +60,11 @@ public class RealStateManager : MonoBehaviour
     }
 
     public Transform directionTransform;
+    public AudioSource directionAudioSource;
 
     [Space, Header("rotation"), SerializeField] private int _realRotation;
     public int rotationMin, rotationMax;
+    private bool rotationToRight;
     public int RealRotation
     {
         get { return _realRotation; }
@@ -68,10 +72,14 @@ public class RealStateManager : MonoBehaviour
         {
             float oldValue = _realRotation;
 
+            rotationToRight = value < oldValue;
+
             _realRotation = Mathf.Clamp(value, rotationMin, rotationMax);
 
-            if (_realRotation != oldValue)
+            if (oldValue != value)
+            {
                 ChangeRealRotation();
+            }
         }
     }
 
@@ -86,7 +94,9 @@ public class RealStateManager : MonoBehaviour
 
     public void StartSimulation()
     {
-        GameManager.instance.StartSimulation();
+        gameObject.transform.localPosition = Vector3.zero;
+
+        GameManager.instance.SetupSimulationUI();
 
         RealSpeed = Random.Range(speedMin, speedMax);
         RealAltitude = Random.Range(altitudeMin, altitudeMax);
@@ -95,9 +105,17 @@ public class RealStateManager : MonoBehaviour
 
         GameManager.instance.SetAllValues(RealSpeed, RealAltitude, RealDirection, RealRotation);
 
-        gameObject.transform.localPosition = Vector3.zero;
+        speedAudioSource.Play();
+        directionAudioSource.Play();
+        maxAltitudeAudioSource.Play();
+        minAltitudeAudioSource.Play();
 
-        ChangeAllPlaneVariables();
+        rotationRightAudioSource.Stop();
+        rotationLeftAudioSource.Stop();
+
+
+        //ChangeAllPlaneVariables();
+        StartCoroutine(SimulationPeriod());
     }
 
     public void ChangeAllPlaneVariables()
@@ -118,7 +136,7 @@ public class RealStateManager : MonoBehaviour
 
     public void ChangeRealSpeed()
     {
-        speedAudioSource.pitch = GameManager.Map(speedMin, speedMax, -0.5f, 2, RealSpeed);
+        speedAudioSource.pitch = GameManager.Map(speedMin, speedMax, minSpeedPitch, maxSpeedPitch, RealSpeed);
     }
 
     public void ChangeRealAltitude()
@@ -133,25 +151,50 @@ public class RealStateManager : MonoBehaviour
 
     public void ChangeRealRotation()
     {
-        if (RealRotation < 0)
+        if (!rotationRightAudioSource.isPlaying)
+            rotationRightAudioSource.Play();
+
+        if (!rotationLeftAudioSource.isPlaying)
+            rotationLeftAudioSource.Play();
+
+        if (rotationToRight)
         {
             rotationLeftAudioSource.volume = 0;
-            rotationRightAudioSource.volume = GameManager.Map(rotationMin, 0f, 1f, 0f, RealRotation);
+            rotationRightAudioSource.volume = GameManager.Map(rotationMin, rotationMax, 1f, 0f, RealRotation);
 
-            Debug.Log("Right rotation volume amount: "+ GameManager.Map(rotationMin, 0f, 0f, 1f, RealRotation));
+            //Debug.Log("Right rotation volume amount: "+ GameManager.Map(rotationMin, 0f, 0f, 1f, RealRotation));
         }
-        else if (RealRotation > 0)
+        else
         {
             rotationRightAudioSource.volume = 0;
-            rotationLeftAudioSource.volume = GameManager.Map(0f, rotationMax, 0f, 1f, RealRotation);
+            rotationLeftAudioSource.volume = GameManager.Map(rotationMin, rotationMax, 0f, 1f, RealRotation);
 
-            Debug.Log("Left rotation volume amount: "+ GameManager.Map(0f, rotationMax, 0f, 1f, RealRotation));
-        }
-
-        if (RealRotation == 0)
-        {
-            rotationLeftAudioSource.volume = 0;
-            rotationRightAudioSource.volume = 0;
+            //Debug.Log("Left rotation volume amount: "+ GameManager.Map(0f, rotationMax, 0f, 1f, RealRotation));
         }
     }
+
+
+    private float timer = 0;
+    IEnumerator SimulationPeriod()
+    {
+        while (timer < simulationTime)
+        {
+
+
+            timer += timerIncreaseAmount;
+            timerText.text = ((int)(simulationTime - timer)).ToString();
+            yield return new WaitForSeconds(timerIncreaseAmount);
+        }
+        GameManager.instance.SimuationFinished();
+
+        speedAudioSource.Stop();
+        directionAudioSource.Stop();
+        maxAltitudeAudioSource.Stop();
+        minAltitudeAudioSource.Stop();
+        rotationRightAudioSource.Stop();
+        rotationLeftAudioSource.Stop();
+
+        Debug.Log("Simulaion Finished!");
+    }
+
 }
