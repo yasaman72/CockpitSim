@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts
 {
@@ -8,9 +9,9 @@ namespace Assets.Scripts
 
         public GameObject startScreen, flightScreen, resultScreen;
 
-        [Space, Header("speed"), SerializeField] private float _speed;
-        public float speedMin, speedMax;
-        public float Speed
+        [Space, Header("speed"), SerializeField] private int _speed;
+        public int speedMin, speedMax;
+        public int Speed
         {
             get { return _speed; }
             set
@@ -18,14 +19,17 @@ namespace Assets.Scripts
                 float oldValue = _speed;
                 _speed = Mathf.Clamp(value, speedMin, speedMax);
                 if (_speed != oldValue)
+                {
                     ChangeSpeedUi();
+                    ChangeRealState();
+                }
 
             }
         }
 
-        [Space, Header(("altitude")), SerializeField] private float _altitude;
-        public float altitudeMin, altitudeMax;
-        public float Altitude
+        [Space, Header(("altitude")), SerializeField] private int _altitude;
+        public int altitudeMin, altitudeMax;
+        public int Altitude
         {
             get { return _altitude; }
             set
@@ -33,13 +37,16 @@ namespace Assets.Scripts
                 float oldValue = _altitude;
                 _altitude = Mathf.Clamp(value, altitudeMin, altitudeMax);
                 if (_altitude != oldValue)
+                {
                     ChangeAltitudeUi();
+                    ChangeRealState();
+                }
             }
         }
 
-        [Space, Header("direction"), SerializeField] private float _direction;
-        public float directionMin, directionMax;
-        public float Direction
+        [Space, Header("direction"), SerializeField] private int _direction;
+        public int directionMin, directionMax;
+        public int Direction
         {
             get { return _direction; }
             set
@@ -49,14 +56,17 @@ namespace Assets.Scripts
                 if (value == 360) _direction = 0;
                 if (value == -1) _direction = 359;
                 if (_direction != oldValue)
+                {
                     ChangeDirectionUi();
+                    ChangeRealState();
+                }
 
             }
         }
 
-        [Space, Header("rotation"), SerializeField] private float _rotation;
-        public float rotationMin, rotationMax;
-        public float Rotation
+        [Space, Header("rotation"), SerializeField] private int _rotation;
+        public int rotationMin, rotationMax;
+        public int Rotation
         {
             get { return _rotation; }
             set
@@ -66,8 +76,10 @@ namespace Assets.Scripts
                 _rotation = Mathf.Clamp(value, rotationMin, rotationMax);
 
                 if (_rotation != oldValue)
+                {
                     ChangeRotationUi();
-
+                    ChangeRealState();
+                }
             }
         }
 
@@ -96,7 +108,7 @@ namespace Assets.Scripts
             resultScreen.SetActive(false);
         }
 
-        public void SetAllValues(float speed, float altitude, float direction, float rotation)
+        public void SetAllValues(int speed, int altitude, int direction, int rotation)
         {
             Speed = speed;
             Altitude = altitude;
@@ -110,16 +122,15 @@ namespace Assets.Scripts
 
             if (speedIndicator != null)
             {
-                Debug.Log("changing speed UI");
+                //Debug.Log("changing speed UI");
 
                 speedIndicator.rotation = Quaternion.Euler(0, 0, uiRotation);
             }
-
         }
 
         private void ChangeAltitudeUi()
         {
-            Debug.Log("changing altitude UI");
+            //Debug.Log("changing altitude UI");
             altitudeSlider.value = Map(altitudeMin, altitudeMax, 0, 1, Altitude);
         }
 
@@ -127,7 +138,7 @@ namespace Assets.Scripts
         {
             if (directionIndicator != null)
             {
-                Debug.Log("changing direction UI");
+                //Debug.Log("changing direction UI");
 
                 directionIndicator.rotation = Quaternion.Euler(0, 0, -Direction);
             }
@@ -139,23 +150,32 @@ namespace Assets.Scripts
 
             if (_rotation <= 0)
             {
-                uiRotation = Map(rotationMin, rotationMax, 0, -20, Rotation);
+                uiRotation = Map(rotationMin, 0, -20, 0, Rotation);
             }
             else
             {
-                uiRotation = Map(rotationMin, rotationMax, 0, 20, Rotation);
+                uiRotation = Map(0, rotationMax, 0, 20, Rotation);
             }
 
             if (rotationIndicator == null) return;
-            Debug.Log("changing rotation UI");
+            //Debug.Log("changing rotation UI, uiRotation: " + uiRotation);
 
             rotationIndicator.rotation = Quaternion.Euler(0, 0, uiRotation);
-
         }
 
-        private static float Map(float a1, float a2, float b1, float b2, float s)
+        public static float Map(float a1, float a2, float b1, float b2, float s)
         {
             return b1 + (s - a1) * (b2 - b1) / (a2 - a1);
+        }
+
+        public void RestartGame()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
+        private void ChangeRealState()
+        {
+            RealStateManager.instance.ChangeAllPlaneVariables(Speed,Altitude,Direction,Rotation);
         }
     }
 }

@@ -781,11 +781,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1447749435}
         m_MethodName: ChangeIndicatorAmount
-        m_Mode: 4
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: -1
           m_FloatArgument: -1
           m_StringArgument: 
           m_BoolArgument: 0
@@ -904,11 +904,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 216540918}
         m_MethodName: ChangeIndicatorAmount
-        m_Mode: 4
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: -1
           m_FloatArgument: -1
           m_StringArgument: 
           m_BoolArgument: 0
@@ -1365,8 +1365,8 @@ RectTransform:
   - {fileID: 1115137508}
   - {fileID: 41855186}
   - {fileID: 990644571}
-  - {fileID: 1794253501}
   - {fileID: 1898520698}
+  - {fileID: 1794253501}
   m_Father: {fileID: 1032890143}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1771,6 +1771,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 478ecd0ab33582d42b029c637aef901b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _realSpeed: 0
+  speedMin: 40
+  speedMax: 200
+  speedAudioSource: {fileID: 471627318}
+  _realAltitude: 0
+  altitudeMin: 0
+  altitudeMax: 100
+  _realDirection: 0
+  directionMin: 0
+  directionMax: 359
+  directionTransform: {fileID: 1764134414}
+  _realRotation: 0
+  rotationMin: -10
+  rotationMax: 10
+  rotationRightAudioSource: {fileID: 624782703}
+  rotationLeftAudioSource: {fileID: 320593799}
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -3933,7 +3949,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 683870465}
+      - m_Target: {fileID: 519420030}
         m_MethodName: StartSimulation
         m_Mode: 1
         m_Arguments:
@@ -4127,7 +4143,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 683870465}
-        m_MethodName: StartSimulation
+        m_MethodName: RestartGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4251,11 +4267,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1447749435}
         m_MethodName: ChangeIndicatorAmount
-        m_Mode: 4
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 1
           m_StringArgument: 
           m_BoolArgument: 0
@@ -4640,7 +4656,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000015258789}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1278906546
@@ -5380,11 +5396,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 216540918}
         m_MethodName: ChangeIndicatorAmount
-        m_Mode: 4
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 1
           m_StringArgument: 
           m_BoolArgument: 0
@@ -6194,11 +6210,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 492140720}
         m_MethodName: ChangeIndicatorAmount
-        m_Mode: 4
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: -1
           m_StringArgument: 
           m_BoolArgument: 0
@@ -6802,13 +6818,13 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 492140720}
         m_MethodName: ChangeIndicatorAmount
-        m_Mode: 4
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: -1
           m_FloatArgument: 1
-          m_StringArgument: 
+          m_StringArgument: 1
           m_BoolArgument: 0
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
@@ -6877,7 +6893,7 @@ RectTransform:
   m_Children:
   - {fileID: 1204589959}
   m_Father: {fileID: 434774575}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -6925,11 +6941,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 434774577}
         m_MethodName: ChangeIndicatorAmount
-        m_Mode: 4
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 1
           m_StringArgument: 
           m_BoolArgument: 0
@@ -7470,7 +7486,7 @@ RectTransform:
   m_Children:
   - {fileID: 1034382876}
   m_Father: {fileID: 434774575}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -7518,11 +7534,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 434774577}
         m_MethodName: ChangeIndicatorAmount
-        m_Mode: 4
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: -1
           m_FloatArgument: -1
           m_StringArgument: 
           m_BoolArgument: 0

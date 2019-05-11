@@ -20,7 +20,7 @@ public class SubmitChange : MonoBehaviour
         this._variableToChange = variableToChange;
     }
 
-    public void ChangeIndicatorAmount(float changeAmount)
+    public void ChangeIndicatorAmount(int changeAmount)
     {
         switch (_variableToChange)
         {
