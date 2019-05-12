@@ -50,13 +50,13 @@ public class StateEditor : Editor
 
 
 
-        if (GUILayout.Button("rotation up"))
+        if (GUILayout.Button("rotate legt"))
         {
-            realStateEditor.rotationUpEvent.Invoke();
+            realStateEditor.rotationLeftEvent.Invoke();
         }
-        if (GUILayout.Button("rotation down"))
+        if (GUILayout.Button("rotate right"))
         {
-            realStateEditor.rotationDownEvent.Invoke();
+            realStateEditor.rotationRightEvent.Invoke();
         }
 
     }

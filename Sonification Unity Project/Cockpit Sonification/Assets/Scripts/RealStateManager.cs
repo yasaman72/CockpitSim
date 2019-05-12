@@ -3,12 +3,22 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class RealStateManager : MonoBehaviour
 {
     public Text timerText;
-    public int simulationTime;
+    public float simulationTime;
     public float timerIncreaseAmount;
+
+    public TMP_Text speedResultTxt, altitudeResultText, directionResultText, rotationResultText;
+    private float speedAccuracyPerc, rotationAccuracyPerc, directionAccuracyPerc, altitudeAccuracyPerc;
+    [Space] public int speedGuessTolerance;
+    [Space] public int altitudeGuessTolerance;
+    [Space] public int directionGuessTolerance;
+    [Space] public int rotationGuessTolerance;
+
+    public RealStateEditor realStateEditor;
 
     [Space, Header("speed"), SerializeField] private int _realSpeed;
     public int speedMin, speedMax;
@@ -65,6 +75,7 @@ public class RealStateManager : MonoBehaviour
     [Space, Header("rotation"), SerializeField] private int _realRotation;
     public int rotationMin, rotationMax;
     private bool rotationToRight;
+
     public int RealRotation
     {
         get { return _realRotation; }
@@ -79,6 +90,10 @@ public class RealStateManager : MonoBehaviour
             if (oldValue != value)
             {
                 ChangeRealRotation();
+            }
+            else
+            {
+                rotationLeftAudioSource.Pause();
             }
         }
     }
@@ -179,7 +194,15 @@ public class RealStateManager : MonoBehaviour
     {
         while (timer < simulationTime)
         {
+            if (timer % 1 == 0)
+            {
+                CompareGuesses();
+            }
 
+            if (timer % stateChangingInterval == 0)
+            {
+                ChangePlaneRealState();
+            }
 
             timer += timerIncreaseAmount;
             timerText.text = ((int)(simulationTime - timer)).ToString();
@@ -194,7 +217,153 @@ public class RealStateManager : MonoBehaviour
         rotationRightAudioSource.Stop();
         rotationLeftAudioSource.Stop();
 
+        speedResultTxt.text = speedAccuracyPerc + "%";
+        altitudeResultText.text = altitudeAccuracyPerc + "%";
+        directionResultText.text = directionAccuracyPerc + "%";
+        rotationResultText.text = rotationAccuracyPerc + "%";
+
         Debug.Log("Simulaion Finished!");
     }
 
+    private void CompareGuesses()
+    {
+        // SPEED
+        if (GameManager.instance.Speed > (RealSpeed - speedGuessTolerance) &&
+            GameManager.instance.Speed < (RealSpeed + speedGuessTolerance))
+        {
+            speedAccuracyPerc += 100 / simulationTime;
+        }
+        else
+        {
+            speedAccuracyPerc -= 100 / simulationTime;
+            if (speedAccuracyPerc < 0)
+                speedAccuracyPerc = 0;
+        }
+
+
+        // ALTITUDE
+        if (GameManager.instance.Altitude > (RealAltitude - altitudeGuessTolerance) &&
+            GameManager.instance.Altitude < (RealAltitude + altitudeGuessTolerance))
+        {
+            altitudeAccuracyPerc += 100 / simulationTime;
+        }
+        else
+        {
+            altitudeAccuracyPerc -= 100 / simulationTime;
+            if (altitudeAccuracyPerc < 0)
+                altitudeAccuracyPerc = 0;
+        }
+
+        // DIRECTION
+        if (GameManager.instance.Direction > (RealDirection - directionGuessTolerance) &&
+            GameManager.instance.Direction < (RealDirection + directionGuessTolerance))
+        {
+            directionAccuracyPerc += 100 / simulationTime;
+        }
+        else
+        {
+            directionAccuracyPerc -= 100 / simulationTime;
+            if (directionAccuracyPerc < 0)
+                directionAccuracyPerc = 0;
+        }
+
+        // ROTATION
+        if (GameManager.instance.Rotation > (RealRotation - rotationGuessTolerance) &&
+            GameManager.instance.Rotation < (RealRotation + rotationGuessTolerance))
+        {
+            rotationAccuracyPerc += 100 / simulationTime;
+        }
+        else
+        {
+            rotationAccuracyPerc -= 100 / simulationTime;
+            if (rotationAccuracyPerc < 0)
+                rotationAccuracyPerc = 0;
+        }
+
+        Debug.Log("speedAccuracyPerc: " + speedAccuracyPerc +
+                  " | rotationAccuracyPerc: " + rotationAccuracyPerc +
+                  " | directionAccuracyPerc: " + directionAccuracyPerc +
+                  " | altitudeAccuracyPerc: " + altitudeAccuracyPerc);
+    }
+
+    [Space] public int stateChangingInterval;
+    [Space] public int stateNotChangeChancePrc;
+    public int speedChangeChancePrc;
+    public int rotationChangeChancePrc;
+    public int altitudeChangeChancePrc;
+    public int directionChangeChancePrc;
+
+    private void ChangePlaneRealState()
+    {
+        // NOTHING CHANGED
+        if (Random.Range(0, 101) <= stateNotChangeChancePrc)
+        {
+            Debug.Log("state didn't change");
+            return;
+        }
+
+        // SPEED
+        if (Random.Range(0, 101) <= speedChangeChancePrc)
+        {
+            Debug.Log("speed changed");
+
+            if (Random.Range(0, 2) == 0)
+            {
+                realStateEditor.speedupEvent.Invoke();
+            }
+            else
+            {
+                realStateEditor.speedDownEvent.Invoke();
+            }
+            //return;
+        }
+
+        // ROTATION
+        if (Random.Range(0, 101) <= rotationChangeChancePrc)
+        {
+            Debug.Log("rotation changed");
+
+            if (Random.Range(0, 2) == 0)
+            {
+                realStateEditor.rotationLeftEvent.Invoke();
+            }
+            else
+            {
+                realStateEditor.rotationRightEvent.Invoke();
+            }
+            //return;
+        }
+
+        // DIRECTION
+        if (Random.Range(0, 101) <= directionChangeChancePrc)
+        {
+            Debug.Log("direction changed");
+
+            if (Random.Range(0, 2) == 0)
+            {
+                realStateEditor.directionUpEvent.Invoke();
+            }
+            else
+            {
+                realStateEditor.directionDownEvent.Invoke();
+            }
+            //return;
+        }
+
+        // ALTITUDE
+        if (Random.Range(0, 101) <= altitudeChangeChancePrc)
+        {
+            Debug.Log("direction changed");
+
+            if (Random.Range(0, 2) == 0)
+            {
+                realStateEditor.altitudeDownEvent.Invoke();
+            }
+            else
+            {
+                realStateEditor.altitudeUpEvent.Invoke();
+            }
+            //return;
+        }
+    }
 }
