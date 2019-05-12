@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
             if (_speed != oldValue)
             {
                 ChangeSpeedUi();
-                //ChangeRealState();
+                ChangeRealState();
             }
 
         }
@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
             if (_altitude != oldValue)
             {
                 ChangeAltitudeUi();
-                //ChangeRealState();
+                ChangeRealState();
             }
         }
     }
@@ -57,7 +57,7 @@ public class GameManager : MonoBehaviour
             if (_direction != oldValue)
             {
                 ChangeDirectionUi();
-                //ChangeRealState();
+                ChangeRealState();
             }
 
         }
@@ -77,7 +77,7 @@ public class GameManager : MonoBehaviour
             if (_rotation != oldValue)
             {
                 ChangeRotationUi();
-                //ChangeRealState();
+                ChangeRealState();
             }
         }
     }
