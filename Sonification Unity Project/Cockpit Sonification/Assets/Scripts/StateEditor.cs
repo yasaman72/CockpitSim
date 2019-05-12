@@ -4,6 +4,7 @@ using UnityEngine;
 using  UnityEditor;
 using  UnityEngine.Events;
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(RealStateEditor))]
 public class StateEditor : Editor
 {
@@ -63,3 +64,4 @@ public class StateEditor : Editor
 
 	
 }
+#endif

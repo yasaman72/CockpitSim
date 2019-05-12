@@ -87,13 +87,14 @@ public class RealStateManager : MonoBehaviour
 
             _realRotation = Mathf.Clamp(value, rotationMin, rotationMax);
 
-            if (oldValue != value)
+            if (oldValue != _realRotation)
             {
                 ChangeRealRotation();
             }
             else
             {
                 rotationLeftAudioSource.Pause();
+                rotationRightAudioSource.Pause();
             }
         }
     }
@@ -217,10 +218,10 @@ public class RealStateManager : MonoBehaviour
         rotationRightAudioSource.Stop();
         rotationLeftAudioSource.Stop();
 
-        speedResultTxt.text = speedAccuracyPerc + "%";
-        altitudeResultText.text = altitudeAccuracyPerc + "%";
-        directionResultText.text = directionAccuracyPerc + "%";
-        rotationResultText.text = rotationAccuracyPerc + "%";
+        speedResultTxt.text = Mathf.RoundToInt(speedAccuracyPerc) + "%";
+        altitudeResultText.text = Mathf.RoundToInt(altitudeAccuracyPerc) + "%";
+        directionResultText.text = Mathf.RoundToInt(directionAccuracyPerc) + "%";
+        rotationResultText.text = Mathf.RoundToInt(rotationAccuracyPerc) + "%";
 
         Debug.Log("Simulaion Finished!");
     }
@@ -280,10 +281,10 @@ public class RealStateManager : MonoBehaviour
                 rotationAccuracyPerc = 0;
         }
 
-        Debug.Log("speedAccuracyPerc: " + speedAccuracyPerc +
-                  " | rotationAccuracyPerc: " + rotationAccuracyPerc +
-                  " | directionAccuracyPerc: " + directionAccuracyPerc +
-                  " | altitudeAccuracyPerc: " + altitudeAccuracyPerc);
+        //Debug.Log("speedAccuracyPerc: " + speedAccuracyPerc +
+        //          " | rotationAccuracyPerc: " + rotationAccuracyPerc +
+        //          " | directionAccuracyPerc: " + directionAccuracyPerc +
+        //          " | altitudeAccuracyPerc: " + altitudeAccuracyPerc);
     }
 
     [Space] public int stateChangingInterval;
@@ -322,9 +323,12 @@ public class RealStateManager : MonoBehaviour
         if (Random.Range(0, 101) <= rotationChangeChancePrc)
         {
             Debug.Log("rotation changed");
+            rotationLeftAudioSource.Pause();
+            rotationRightAudioSource.Pause();
 
             if (Random.Range(0, 2) == 0)
             {
+
                 realStateEditor.rotationLeftEvent.Invoke();
             }
             else
