@@ -65,7 +65,13 @@ public class RealStateManager : MonoBehaviour
             if (value == 360) _realDirection = 0;
             if (value == -1) _realDirection = 359;
             if (_realDirection != oldValue)
+            {
                 ChangeRealDirection();
+            }
+            else
+            {
+                directionAudioSource.Pause();
+            }
         }
     }
 
@@ -122,10 +128,10 @@ public class RealStateManager : MonoBehaviour
         GameManager.instance.SetAllValues(RealSpeed, RealAltitude, RealDirection, RealRotation);
 
         speedAudioSource.Play();
-        directionAudioSource.Play();
         maxAltitudeAudioSource.Play();
         minAltitudeAudioSource.Play();
 
+        directionAudioSource.Stop();
         rotationRightAudioSource.Stop();
         rotationLeftAudioSource.Stop();
 
@@ -162,6 +168,8 @@ public class RealStateManager : MonoBehaviour
 
     public void ChangeRealDirection()
     {
+        if (!directionAudioSource.isPlaying)
+            directionAudioSource.Play();
         directionTransform.rotation = Quaternion.Euler(0, RealDirection, 0);
     }
 
@@ -342,6 +350,7 @@ public class RealStateManager : MonoBehaviour
         if (Random.Range(0, 101) <= directionChangeChancePrc)
         {
             Debug.Log("direction changed");
+            directionAudioSource.Pause();
 
             if (Random.Range(0, 2) == 0)
             {

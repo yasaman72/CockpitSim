@@ -57,7 +57,7 @@ public class GameManager : MonoBehaviour
             if (_direction != oldValue)
             {
                 ChangeDirectionUi();
-               // ChangeRealState();
+               //ChangeRealState();
             }
 
         }

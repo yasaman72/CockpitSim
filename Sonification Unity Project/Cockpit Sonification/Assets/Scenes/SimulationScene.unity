@@ -2221,7 +2221,7 @@ MonoBehaviour:
   rotationResultText: {fileID: 1834949708}
   speedGuessTolerance: 20
   altitudeGuessTolerance: 10
-  directionGuessTolerance: 40
+  directionGuessTolerance: 50
   rotationGuessTolerance: 1
   realStateEditor: {fileID: 519420033}
   _realSpeed: 0
